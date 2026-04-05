@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>drglo · shop</title>
+  <meta name="description" content="drglo — next-gen laundry. Tap your region to shop."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{background:#04142e;min-height:100%;}
+    body{font-family:'Tajawal',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2.5rem 1rem 3rem;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+    .brand{text-align:center;margin-bottom:1.8rem;animation:fadeUp .7s ease both;}
+    .logo-ring{width:76px;height:76px;border-radius:50%;border:1px solid rgba(100,160,255,.22);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+    .brand-en{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;letter-spacing:.14em;color:#e8f0ff;text-transform:lowercase;}
+    .brand-sub{font-size:11px;color:rgba(140,180,255,.4);margin-top:7px;letter-spacing:.06em;}
+
+    .lang-toggle{display:flex;gap:7px;margin-bottom:1.3rem;animation:fadeUp .7s .08s ease both;}
+    .ltbtn{background:none;border:1px solid rgba(100,160,255,.18);border-radius:20px;padding:5px 16px;font-size:12px;font-family:'Tajawal',sans-serif;color:rgba(160,200,255,.45);cursor:pointer;transition:all .2s;}
+    .ltbtn.active{background:rgba(56,138,221,.16);border-color:rgba(56,138,221,.45);color:#a8d4ff;}
+
+    .map-shell{width:100%;max-width:640px;border-radius:16px;border:1px solid rgba(56,138,221,.16);overflow:hidden;background:#061828;position:relative;animation:fadeUp .7s .15s ease both;}
+    #gulf-svg{display:block;width:100%;cursor:pointer;}
+
+    .tip{position:absolute;pointer-events:none;background:#0a2040;border:1px solid rgba(56,138,221,.35);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'Tajawal',sans-serif;color:#c0dcff;white-space:nowrap;opacity:0;transition:opacity .15s;z-index:20;}
+
+    .cards{width:100%;max-width:640px;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;animation:fadeUp .7s .28s ease both;}
+    @media(max-width:440px){.cards{grid-template-columns:1fr;}}
+
+    .card{background:rgba(6,24,42,.92);border:1px solid rgba(56,138,221,.16);border-radius:14px;padding:1.1rem 1.2rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:12px;transition:border-color .2s,transform .15s;overflow:hidden;}
+    .card:hover{border-color:rgba(56,138,221,.42);transform:translateY(-2px);}
+    .card:active{transform:scale(.98);}
+
+    .cdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .ctxt{flex:1;}
+    .clabel{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:rgba(130,175,255,.38);margin-bottom:3px;}
+    .ctitle{font-size:14px;font-weight:500;color:#cce4ff;}
+    .csub{font-size:11px;color:rgba(130,175,255,.45);font-weight:300;margin-top:2px;}
+    .carr{color:rgba(100,160,255,.38);font-size:14px;transition:transform .15s;flex-shrink:0;}
+    .card:hover .carr{transform:translateX(3px);}
+
+    .footer{margin-top:2.2rem;font-size:11px;color:rgba(90,140,210,.22);letter-spacing:.06em;animation:fadeUp .7s .38s ease both;}
+  </style>
+</head>
+<body>
+
+<div class="brand">
+  <div class="logo-ring">
+    <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+      <circle cx="19" cy="19" r="11" fill="none" stroke="rgba(100,170,255,.45)" stroke-width="1.1"/>
+      <circle cx="19" cy="19" r="5.5" fill="rgba(100,170,255,.18)"/>
+      <path d="M19 8 C23 13,23 25,19 30" stroke="rgba(100,170,255,.45)" stroke-width=".9" fill="none"/>
+      <path d="M19 8 C15 13,15 25,19 30" stroke="rgba(100,170,255,.45)" stroke-width=".9" fill="none"/>
+      <path d="M8 19 L30 19" stroke="rgba(100,170,255,.38)" stroke-width=".9"/>
+    </svg>
+  </div>
+  <div class="brand-en">drglo</div>
+  <div class="brand-sub" id="brand-sub">NEXT-GEN LAUNDRY · TAP YOUR REGION</div>
+</div>
+
+<div class="lang-toggle">
+  <button class="ltbtn active" id="btn-en" onclick="setLang('en')">English</button>
+  <button class="ltbtn" id="btn-ar" onclick="setLang('ar')">عربي</button>
+</div>
+
+<div class="map-shell">
+  <svg id="gulf-svg" viewBox="0 0 640 420"></svg>
+  <div class="tip" id="tip"></div>
+</div>
+
+<div class="cards" id="cards">
+  <a href="https://aliabdulaalit-dr-glo-project.odoo.com/" class="card" target="_blank" rel="noopener">
+    <div class="cdot" style="background:#4fa3f7;"></div>
+    <div class="ctxt">
+      <div class="clabel" id="lbl-bh"></div>
+      <div class="ctitle" id="title-bh"></div>
+      <div class="csub" id="sub-bh"></div>
+    </div>
+    <div class="carr" id="arr-bh">→</div>
+  </a>
+  <a href="https://drgloshop.com/" class="card" target="_blank" rel="noopener">
+    <div class="cdot" style="background:#a78bfa;"></div>
+    <div class="ctxt">
+      <div class="clabel" id="lbl-gl"></div>
+      <div class="ctitle" id="title-gl"></div>
+      <div class="csub" id="sub-gl"></div>
+    </div>
+    <div class="carr" id="arr-gl">→</div>
+  </a>
+</div>
+
+<div class="footer" id="footer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+  const BH_LINK = 'https://aliabdulaalit-dr-glo-project.odoo.com/';
+  const GL_LINK = 'https://drgloshop.com/';
+
+  const GULF = {
+    '682':{en:'Saudi Arabia',ar:'المملكة العربية السعودية',bh:false},
+    '784':{en:'UAE',ar:'الإمارات',bh:false},
+    '512':{en:'Oman',ar:'عُمان',bh:false},
+    '414':{en:'Kuwait',ar:'الكويت',bh:false},
+    '634':{en:'Qatar',ar:'قطر',bh:false},
+    '368':{en:'Iraq',ar:'العراق',bh:false},
+    '887':{en:'Yemen',ar:'اليمن',bh:false},
+  };
+
+  const T = {
+    en:{sub:'NEXT-GEN LAUNDRY · TAP YOUR REGION',lblBh:'bahrain only',titBh:'Bahrain Store',subBh:'Local delivery',lblGl:'worldwide',titGl:'International Store',subGl:'Saudi Arabia + global shipping',tipBh:'Bahrain Store — tap to shop',tipGl:'International Store — tap to shop',footer:'drglo · clean reimagined',arr:'→'},
+    ar:{sub:'غسيل من الجيل القادم · اضغط على منطقتك',lblBh:'البحرين فقط',titBh:'متجر البحرين',subBh:'توصيل محلي',lblGl:'دولي',titGl:'المتجر الدولي',subGl:'السعودية + شحن عالمي',tipBh:'متجر البحرين — اضغط للتسوق',tipGl:'المتجر الدولي — اضغط للتسوق',footer:'drglo · نظافة من نوع جديد',arr:'←'}
+  };
+
+  let lang = 'en';
+  let labelSel = null;
+  let bhLabelEl = null;
+  let bhIsland = null;
+
+  function applyLang(l) {
+    lang = l;
+    const s = T[l], isAr = l==='ar';
+    document.getElementById('brand-sub').textContent  = s.sub;
+    document.getElementById('lbl-bh').textContent     = s.lblBh;
+    document.getElementById('title-bh').textContent   = s.titBh;
+    document.getElementById('sub-bh').textContent     = s.subBh;
+    document.getElementById('lbl-gl').textContent     = s.lblGl;
+    document.getElementById('title-gl').textContent   = s.titGl;
+    document.getElementById('sub-gl').textContent     = s.subGl;
+    document.getElementById('footer').textContent     = s.footer;
+    document.getElementById('arr-bh').textContent     = s.arr;
+    document.getElementById('arr-gl').textContent     = s.arr;
+    document.getElementById('btn-en').classList.toggle('active',!isAr);
+    document.getElementById('btn-ar').classList.toggle('active',isAr);
+    document.getElementById('cards').style.direction  = isAr?'rtl':'ltr';
+    document.documentElement.lang = l;
+    if (labelSel) {
+      labelSel.each(function(d){
+        const info = GULF[String(d.id)];
+        if (info) d3.select(this).text(isAr ? info.ar : info.en);
+      });
+    }
+    if (bhLabelEl) bhLabelEl.textContent = isAr ? 'البحرين' : 'Bahrain';
+  }
+
+  function setLang(l) { applyLang(l); }
+
+  const W=640, H=420;
+  const svg   = d3.select('#gulf-svg');
+  const tip   = document.getElementById('tip');
+  const shell = document.querySelector('.map-shell');
+  const GULF_IDS = new Set(Object.keys(GULF));
+
+  svg.append('rect').attr('width',W).attr('height',H).attr('fill','#061828');
+
+  const projection = d3.geoMercator().center([50,24]).scale(1050).translate([W/2,H/2]);
+  const pathGen    = d3.geoPath(projection);
+
+  d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
+    const all       = topojson.feature(world, world.objects.countries).features;
+    const gulfFeats = all.filter(d => GULF_IDS.has(String(d.id)));
+
+    svg.selectAll('path.gc')
+      .data(gulfFeats).join('path')
+      .attr('class','gc')
+      .attr('d',pathGen)
+      .attr('fill','#0d2e50')
+      .attr('stroke','rgba(56,138,221,.22)')
+      .attr('stroke-width',.9)
+      .style('cursor','pointer')
+      .style('opacity',0)
+      .transition().duration(700).delay((_,i)=>i*60)
+      .style('opacity',1);
+
+    svg.selectAll('path.gc')
+      .on('mousemove',function(event,d){
+        d3.select(this).attr('fill','#163d60');
+        const rect=shell.getBoundingClientRect();
+        const x=event.clientX-rect.left, y=event.clientY-rect.top;
+        const s=T[lang];
+        const name=lang==='ar'?GULF[String(d.id)]?.ar:GULF[String(d.id)]?.en;
+        tip.style.opacity=1;
+        tip.style.left=Math.min(x+14,shell.offsetWidth-240)+'px';
+        tip.style.top=Math.max(y-44,8)+'px';
+        tip.style.direction=lang==='ar'?'rtl':'ltr';
+        tip.textContent=(name?name+' · ':'')+s.tipGl;
+      })
+      .on('mouseleave',function(){
+        d3.select(this).attr('fill','#0d2e50');
+        tip.style.opacity=0;
+      })
+      .on('click',function(){ window.open(GL_LINK,'_blank'); });
+
+    const lg = svg.append('g');
+    gulfFeats.forEach(d=>{
+      const info=GULF[String(d.id)];
+      if(!info)return;
+      const c=pathGen.centroid(d);
+      if(isNaN(c[0])||isNaN(c[1]))return;
+      lg.append('text').datum(d)
+        .attr('class','map-lbl')
+        .attr('x',c[0]).attr('y',c[1])
+        .attr('text-anchor','middle').attr('dominant-baseline','middle')
+        .attr('font-size',9).attr('font-family','Tajawal,sans-serif')
+        .attr('fill','rgba(140,190,255,.42)').attr('pointer-events','none')
+        .style('opacity',0).text(info.en)
+        .transition().duration(600).delay(500).style('opacity',1);
+    });
+    labelSel = lg.selectAll('text.map-lbl');
+
+    const BH_COORD = [50.5577, 26.0667];
+    const [bhX, bhY] = projection(BH_COORD);
+
+    svg.append('circle')
+      .attr('cx',bhX).attr('cy',bhY).attr('r',24)
+      .attr('fill','rgba(0,0,0,0)').style('cursor','pointer')
+      .on('mousemove',function(event){
+        const rect=shell.getBoundingClientRect();
+        const x=event.clientX-rect.left, y=event.clientY-rect.top;
+        tip.style.opacity=1;
+        tip.style.left=Math.min(x+14,shell.offsetWidth-240)+'px';
+        tip.style.top=Math.max(y-44,8)+'px';
+        tip.style.direction=lang==='ar'?'rtl':'ltr';
+        tip.textContent=T[lang].tipBh;
+        if(bhIsland) bhIsland.attr('fill','#2e7be8');
+      })
+      .on('mouseleave',function(){
+        tip.style.opacity=0;
+        if(bhIsland) bhIsland.attr('fill','#1a5cbf');
+      })
+      .on('click',function(){ window.open(BH_LINK,'_blank'); });
+
+    const g = svg.append('g').attr('transform',`translate(${bhX},${bhY})`).style('pointer-events','none');
+
+    const r1=g.append('circle').attr('r',6).attr('fill','none').attr('stroke','#4fa3f7').attr('stroke-width',1.5).attr('opacity',0);
+    const r2=g.append('circle').attr('r',6).attr('fill','none').attr('stroke','#4fa3f7').attr('stroke-width',1).attr('opacity',0);
+    function ripple(){
+      r1.attr('r',6).attr('opacity',.7).transition().duration(1500).attr('r',28).attr('opacity',0).on('end',ripple);
+      r2.attr('r',6).attr('opacity',.4).transition().delay(450).duration(1500).attr('r',20).attr('opacity',0);
+    }
+    setTimeout(ripple,900);
+
+    bhIsland = g.append('ellipse').attr('rx',11).attr('ry',8).attr('fill','#1a5cbf').attr('stroke','#4fa3f7').attr('stroke-width',1.5);
+    g.append('circle').attr('r',3.5).attr('fill','#a8d8ff');
+
+    const fo = svg.append('foreignObject').attr('x',bhX-40).attr('y',bhY-33).attr('width',80).attr('height',18).style('pointer-events','none');
+    const div = fo.append('xhtml:div')
+      .style('text-align','center').style('font-size','9.5px')
+      .style('font-family','Tajawal,sans-serif').style('color','rgba(160,215,255,.8)').style('white-space','nowrap');
+    bhLabelEl = div.node();
+
+    applyLang('en');
+  });
+</script>
+</body>
+</html>
