@@ -1,642 +1,345 @@
+
 <!DOCTYPE html>
-
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>drglo · shop</title>
-  <meta name="description" content="drglo — next-gen laundry. Tap your region to shop."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f3f0ec;--ink:#191816;--muted:#8c8b84;--light:#b6b5ae;
+  --accent:#2451a0;--accent-lt:rgba(36,81,160,.08);--border:rgba(0,0,0,.08);
+}
+html,body{background:var(--bg);min-height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'Tajawal',sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:0 clamp(.5rem,3vw,1.5rem) 4rem;position:relative;overflow-x:hidden}
+#bubble-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+.hero,.lang-toggle,.map-wrap,.cards,.footer{position:relative;z-index:1}
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-    :root {
-      --bg:        #f3f0ec;
-      --bg-card:   #ffffff;
-      --ink:       #191816;
-      --muted:     #8c8b84;
-      --light:     #b6b5ae;
-      --accent:    #2451a0;
-      --accent-lt: rgba(36,81,160,.08);
-      --border:    rgba(0,0,0,.08);
-    }
+/* Hero */
+.hero{width:100%;max-width:600px;display:flex;flex-direction:column;align-items:center;padding-top:clamp(1.6rem,5vw,2.8rem);margin-bottom:clamp(.6rem,2vw,1.2rem);animation:fadeUp .6s ease both}
+.brand-en{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,6vw,38px);font-weight:500;letter-spacing:.15em;color:var(--accent);text-transform:lowercase;line-height:1}
+.brand-sub{font-size:clamp(8px,2vw,11px);color:var(--accent);margin-top:6px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;text-align:center;padding:0 1rem}
 
-    html, body {
-      background: var(--bg);
-      min-height: 100%;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    body {
-      font-family: 'Tajawal', sans-serif;
-      display: flex; flex-direction: column; align-items: center;
-      min-height: 100vh; padding: 0 1rem 4rem;
-    }
+/* Lang toggle */
+.lang-toggle{display:flex;gap:6px;margin-bottom:clamp(.6rem,2vw,1rem);animation:fadeUp .6s .08s ease both}
+.ltbtn{background:none;border:1px solid var(--border);border-radius:20px;padding:5px 18px;font-size:clamp(11px,2.5vw,13px);font-family:'Tajawal',sans-serif;color:var(--muted);cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.ltbtn.active{background:var(--accent-lt);border-color:rgba(36,81,160,.3);color:var(--accent);font-weight:500}
 
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(16px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-    @keyframes shimmer {
-      0%,100% { opacity:.05; } 50% { opacity:.1; }
-    }
-    @keyframes ldot {
-      0%,100% { opacity:.25; transform:scale(.75); }
-      50%      { opacity:1;   transform:scale(1.1); }
-    }
+/* Map */
+.map-wrap{width:100%;max-width:700px;position:relative;animation:fadeUp .6s .14s ease both}
+#gulf-svg{display:block;width:100%;height:auto}
 
-    /* ── Hero ── */
-    .hero {
-      width:100%; max-width:600px;
-      display:flex; flex-direction:column; align-items:center;
-      padding-top:2.8rem; margin-bottom:1.2rem;
-      position:relative;
-      animation: fadeUp .6s ease both;
-    }
-    .logo-bg {
-      position:absolute; top:-20px; left:50%;
-      transform:translateX(-50%);
-      width:230px; height:230px;
-      background:center/contain no-repeat;
-      opacity:.06; filter:blur(5px) saturate(0);
-      pointer-events:none; z-index:0;
-      animation:shimmer 7s ease-in-out infinite;
-    }
-    .logo-img {
-      width:80px; height:80px; object-fit:contain;
-      position:relative; z-index:1; margin-bottom:.8rem;
-    }
-    .logo-fallback {
-      display:none; width:80px; height:80px; border-radius:50%;
-      background:linear-gradient(135deg,#d8d3ca,#c2bcb3);
-      align-items:center; justify-content:center;
-      position:relative; z-index:1; margin-bottom:.8rem;
-    }
-    .logo-fallback span {
-      font-family:'Cormorant Garamond',serif;
-      font-size:26px; font-weight:500; color:var(--ink); letter-spacing:.05em;
-    }
-    .brand-en {
-      font-family:'Cormorant Garamond',serif;
-      font-size:clamp(30px,7vw,38px); font-weight:500;
-      letter-spacing:.15em; color:var(--ink);
-      text-transform:lowercase; line-height:1;
-      position:relative; z-index:1;
-    }
-    .brand-sub {
-      font-size:clamp(9px,2.2vw,11px); color:var(--muted);
-      margin-top:7px; letter-spacing:.1em; text-transform:uppercase;
-      position:relative; z-index:1;
-    }
+/* Tooltip */
+.tip{position:absolute;pointer-events:none;background:rgba(255,255,255,.96);border:1px solid rgba(0,0,0,.08);border-radius:8px;padding:5px 11px;font-size:clamp(11px,2.5vw,13px);font-family:'Tajawal',sans-serif;color:var(--ink);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:30;box-shadow:0 4px 16px rgba(0,0,0,.1)}
 
-    /* ── Lang Toggle ── */
-    .lang-toggle {
-      display:flex; gap:6px; margin-bottom:1rem;
-      animation:fadeUp .6s .08s ease both;
-    }
-    .ltbtn {
-      background:none; border:1px solid var(--border);
-      border-radius:20px; padding:5px 16px;
-      font-size:12px; font-family:'Tajawal',sans-serif;
-      color:var(--muted); cursor:pointer;
-      transition:background .2s,border-color .2s,color .2s;
-      -webkit-tap-highlight-color:transparent;
-    }
-    .ltbtn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-    .ltbtn.active {
-      background:var(--accent-lt);
-      border-color:rgba(36,81,160,.22);
-      color:var(--accent);
-    }
+/* Cards */
+.cards{width:100%;max-width:600px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:clamp(8px,2vw,12px);margin-top:clamp(10px,3vw,16px);animation:fadeUp .6s .24s ease both}
+.card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:clamp(.75rem,2.5vw,1rem) clamp(.85rem,2.5vw,1.1rem);text-decoration:none;display:flex;align-items:center;gap:clamp(8px,2vw,11px);transition:border-color .2s,transform .18s,box-shadow .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.card:hover{border-color:rgba(36,81,160,.22);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.07)}
+.card:active{transform:scale(.975)}
+.flag-wrap{width:36px;height:24px;border-radius:4px;overflow:hidden;flex-shrink:0;border:1px solid rgba(0,0,0,.08);line-height:0}
+.flag-wrap .fi{width:36px!important;height:24px!important;background-size:cover!important;display:block!important}
+.ctxt{flex:1;min-width:0}
+.clabel{font-size:clamp(9px,2vw,10px);letter-spacing:.08em;text-transform:uppercase;color:var(--light);margin-bottom:2px}
+.ctitle{font-size:clamp(13px,3vw,14px);font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csub{font-size:clamp(10px,2.5vw,11px);color:#9a9990;font-weight:300;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.carr{color:var(--accent);font-size:15px;flex-shrink:0;transition:transform .18s}
+[dir="ltr"] .card:hover .carr{transform:translateX(3px)}
+[dir="rtl"] .carr{display:inline-block;transform:scaleX(-1)}
+[dir="rtl"] .card:hover .carr{transform:scaleX(-1) translateX(-3px)}
 
-    /* ── Map wrapper — borderless, floats on page bg ── */
-    .map-wrap {
-      width:100%; max-width:640px;
-      position:relative;
-      animation:fadeUp .6s .14s ease both;
-    }
-    #gulf-svg {
-      display:block; width:100%; height:auto;
-      overflow:visible;
-    }
-
-    /* On very small screens prevent overflow bleeding */
-    @media (max-width:460px) {
-      .map-wrap { overflow:hidden; }
-      #gulf-svg  { overflow:hidden; }
-    }
-
-    /* ── Tooltip ── */
-    .tip {
-      position:absolute; pointer-events:none;
-      background:rgba(255,255,255,.96);
-      border:1px solid rgba(0,0,0,.08);
-      border-radius:8px; padding:5px 11px;
-      font-size:12px; font-family:'Tajawal',sans-serif;
-      color:var(--ink); white-space:nowrap;
-      opacity:0; transition:opacity .12s;
-      z-index:30; box-shadow:0 4px 16px rgba(0,0,0,.1);
-    }
-
-    /* ── Loading dots ── */
-    .map-loader {
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      z-index:10; transition:opacity .35s;
-    }
-    .map-loader.hidden { opacity:0; pointer-events:none; }
-    .map-loader-dot {
-      width:7px; height:7px; border-radius:50%;
-      background:var(--muted);
-      animation:ldot .9s ease-in-out infinite;
-    }
-    .map-loader-dot:nth-child(2){ animation-delay:.15s; margin:0 5px; }
-    .map-loader-dot:nth-child(3){ animation-delay:.3s; }
-
-    /* ── Cards ── */
-    .cards {
-      width:100%; max-width:600px;
-      display:grid; grid-template-columns:1fr 1fr;
-      gap:10px; margin-top:16px;
-      animation:fadeUp .6s .24s ease both;
-    }
-    @media(max-width:420px){ .cards{ grid-template-columns:1fr; } }
-
-    .card {
-      background:var(--bg-card); border:1px solid var(--border);
-      border-radius:13px; padding:1rem 1.1rem;
-      text-decoration:none; display:flex; align-items:center; gap:11px;
-      transition:border-color .2s,transform .18s,box-shadow .2s;
-      -webkit-tap-highlight-color:transparent;
-    }
-    .card:hover {
-      border-color:rgba(36,81,160,.2);
-      transform:translateY(-2px);
-      box-shadow:0 6px 24px rgba(0,0,0,.07);
-    }
-    .card:active { transform:scale(.975); }
-    .card:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-
-    .flag-wrap {
-      width:36px; height:24px; border-radius:4px;
-      overflow:hidden; flex-shrink:0;
-      border:1px solid rgba(0,0,0,.08); line-height:0;
-    }
-    .flag-wrap .fi {
-      width:36px !important; height:24px !important;
-      background-size:cover !important; display:block;
-    }
-    .ctxt { flex:1; min-width:0; }
-    .clabel {
-      font-size:10px; letter-spacing:.08em; text-transform:uppercase;
-      color:var(--light); margin-bottom:2px;
-    }
-    .ctitle {
-      font-size:14px; font-weight:500; color:var(--ink);
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .csub {
-      font-size:11px; color:#9a9990; font-weight:300; margin-top:2px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .carr {
-      color:var(--light); font-size:15px; flex-shrink:0;
-      transition:transform .18s,color .18s;
-    }
-    .card:hover .carr { transform:translateX(3px); color:var(--accent); }
-    [dir="rtl"] .card:hover .carr { transform:translateX(-3px); }
-
-    /* ── Footer ── */
-    .footer {
-      margin-top:2rem; font-size:11px;
-      color:var(--light); letter-spacing:.06em; text-align:center;
-      animation:fadeUp .6s .34s ease both;
-    }
-  </style>
-
+/* Footer */
+.footer{margin-top:clamp(1.2rem,4vw,2rem);font-size:clamp(10px,2vw,11px);color:var(--accent);letter-spacing:.06em;text-align:center;opacity:.6;animation:fadeUp .6s .34s ease both}
+</style>
 </head>
 <body>
 
-<!-- HERO -->
+<canvas id="bubble-canvas"></canvas>
 
 <div class="hero">
-  <div class="logo-bg" id="logo-bg" style="background-image:url('logo.png')"></div>
-  <img src="logo.png" class="logo-img" id="logo-img" alt="drglo"
-    onerror="this.style.display='none';
-             document.getElementById('logo-bg').style.display='none';
-             document.getElementById('logo-fallback').style.display='flex';"/>
-  <div class="logo-fallback" id="logo-fallback" aria-hidden="true"><span>dg</span></div>
   <div class="brand-en">drglo</div>
-  <div class="brand-sub" id="brand-sub">NEXT-GEN LAUNDRY · TAP YOUR REGION</div>
+  <div class="brand-sub" id="brand-sub">غسيل من الجيل القادم · اضغط على منطقتك</div>
 </div>
 
-<!-- LANG TOGGLE -->
-
-<div class="lang-toggle" role="group" aria-label="Language">
-  <button class="ltbtn active" id="btn-en" onclick="setLang('en')" aria-pressed="true">English</button>
-  <button class="ltbtn"        id="btn-ar" onclick="setLang('ar')" aria-pressed="false">عربي</button>
+<div class="lang-toggle">
+  <button class="ltbtn" id="btn-en" onclick="setLang('en')">English</button>
+  <button class="ltbtn active" id="btn-ar" onclick="setLang('ar')">عربي</button>
 </div>
 
-<!-- MAP -->
-
-<div class="map-wrap" role="region" aria-label="Gulf region map">
-  <svg id="gulf-svg" viewBox="0 0 640 430" aria-hidden="true"></svg>
-  <div class="map-loader" id="map-loader" aria-hidden="true">
-    <div class="map-loader-dot"></div>
-    <div class="map-loader-dot"></div>
-    <div class="map-loader-dot"></div>
-  </div>
-  <div class="tip" id="tip" role="tooltip"></div>
+<div class="map-wrap" id="map-wrap">
+  <svg id="gulf-svg" viewBox="0 0 660 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+  <div class="tip" id="tip"></div>
 </div>
 
-<!-- CARDS -->
-
-<div class="cards" id="cards">
-  <a href="https://aliabdulaalit-dr-glo-project.odoo.com" class="card"
-     target="_blank" rel="noopener noreferrer" id="card-bh">
-    <div class="flag-wrap"><span class="fi fi-bh fis" aria-hidden="true"></span></div>
+<div class="cards">
+  <a href="https://aliabdulaalit-dr-glo-project.odoo.com" class="card" target="_blank" rel="noopener" id="card-bh">
+    <div class="flag-wrap"><span class="fi fi-bh" style="width:36px;height:24px;background-size:cover;display:block"></span></div>
     <div class="ctxt">
-      <div class="clabel" id="lbl-bh"></div>
-      <div class="ctitle" id="title-bh"></div>
-      <div class="csub"   id="sub-bh"></div>
+      <div class="clabel" id="lbl-bh">البحرين فقط</div>
+      <div class="ctitle" id="title-bh">متجر البحرين</div>
+      <div class="csub" id="sub-bh">توصيل محلي</div>
     </div>
-    <div class="carr" id="arr-bh" aria-hidden="true">→</div>
+    <div class="carr" id="arr-bh">→</div>
   </a>
-  <a href="https://drgloshop.com" class="card"
-     target="_blank" rel="noopener noreferrer" id="card-gl">
-    <div class="flag-wrap"><span class="fi fi-sa fis" aria-hidden="true"></span></div>
+  <a href="https://drgloshop.com" class="card" target="_blank" rel="noopener" id="card-gl">
+    <div class="flag-wrap"><span class="fi fi-sa" style="width:36px;height:24px;background-size:cover;display:block"></span></div>
     <div class="ctxt">
-      <div class="clabel" id="lbl-gl"></div>
-      <div class="ctitle" id="title-gl"></div>
-      <div class="csub"   id="sub-gl"></div>
+      <div class="clabel" id="lbl-gl">دولي</div>
+      <div class="ctitle" id="title-gl">المتجر الدولي</div>
+      <div class="csub" id="sub-gl">السعودية + شحن عالمي</div>
     </div>
-    <div class="carr" id="arr-gl" aria-hidden="true">→</div>
+    <div class="carr" id="arr-gl">→</div>
   </a>
 </div>
 
-<div class="footer" id="footer"></div>
+<div class="footer" id="footer">drglo · نظافة من نوع جديد</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
-
 <script>
 'use strict';
 
-const BH_LINK = 'https://aliabdulaalit-dr-glo-project.odoo.com';
-const GL_LINK = 'https://drgloshop.com';
-
-const GULF = {
-  '48':  { en:'Bahrain',      ar:'البحرين',                  iso:'bh', lon:50.5577, lat:26.0667 },
-  '682': { en:'Saudi Arabia', ar:'المملكة العربية السعودية', iso:'sa', lon:45.0,    lat:24.0   },
-  '784': { en:'UAE',          ar:'الإمارات',                 iso:'ae', lon:54.0,    lat:23.9   },
-  '512': { en:'Oman',         ar:'عُمان',                    iso:'om', lon:57.5,    lat:22.5   },
-  '414': { en:'Kuwait',       ar:'الكويت',                   iso:'kw', lon:47.5,    lat:29.3   },
-  '634': { en:'Qatar',        ar:'قطر',                      iso:'qa', lon:51.2,    lat:25.3   },
-  '368': { en:'Iraq',         ar:'العراق',                   iso:'iq', lon:43.7,    lat:33.0   },
-  '887': { en:'Yemen',        ar:'اليمن',                    iso:'ye', lon:47.5,    lat:15.5   },
-};
-
-const T = {
-  en:{
-    sub:'NEXT-GEN LAUNDRY · TAP YOUR REGION',
-    lblBh:'bahrain only', titBh:'Bahrain Store',       subBh:'Local delivery',
-    lblGl:'worldwide',    titGl:'International Store', subGl:'Saudi Arabia + global',
-    tipBh:'Bahrain Store',tipGl:'International Store',
-    footer:'drglo · clean reimagined', arr:'→', insetLbl:'BAHRAIN',
-  },
-  ar:{
-    sub:'غسيل من الجيل القادم · اضغط على منطقتك',
-    lblBh:'البحرين فقط', titBh:'متجر البحرين',   subBh:'توصيل محلي',
-    lblGl:'دولي',        titGl:'المتجر الدولي',  subGl:'السعودية + شحن عالمي',
-    tipBh:'متجر البحرين',tipGl:'المتجر الدولي',
-    footer:'drglo · نظافة من نوع جديد', arr:'←', insetLbl:'البحرين',
+/* ── Bubbles ── */
+(function(){
+  const c=document.getElementById('bubble-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,bs=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  function mk(){
+    return{x:Math.random()*W,y:H+Math.random()*80,r:Math.random()*24+6,
+      vx:(Math.random()-.5)*.35,vy:-(Math.random()*.6+.2),
+      alpha:Math.random()*.12+.04,phase:Math.random()*Math.PI*2,hue:215+Math.random()*15};
   }
+  for(let i=0;i<22;i++){let b=mk();b.y=Math.random()*H;bs.push(b);}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    bs.forEach(b=>{
+      b.x+=b.vx+Math.sin(b.phase)*.25;b.y+=b.vy;b.phase+=.011;
+      if(b.y<-b.r*2)Object.assign(b,mk());
+      ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+      ctx.fillStyle=`hsla(${b.hue},50%,72%,${b.alpha})`;ctx.fill();
+      ctx.strokeStyle=`hsla(${b.hue},55%,48%,${b.alpha*1.8})`;ctx.lineWidth=.8;ctx.stroke();
+      ctx.beginPath();ctx.arc(b.x-b.r*.3,b.y-b.r*.3,b.r*.17,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${b.alpha*2})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+const BH_LINK='https://aliabdulaalit-dr-glo-project.odoo.com';
+const GL_LINK='https://drgloshop.com';
+
+const GULF={
+  '48': {en:'Bahrain',      ar:'البحرين',                  iso:'bh',lon:50.5577,lat:26.0667},
+  '682':{en:'Saudi Arabia', ar:'المملكة العربية السعودية', iso:'sa',lon:45.0,   lat:24.0},
+  '784':{en:'UAE',          ar:'الإمارات',                 iso:'ae',lon:54.0,   lat:23.9},
+  '512':{en:'Oman',         ar:'عُمان',                    iso:'om',lon:57.5,   lat:22.5},
+  '414':{en:'Kuwait',       ar:'الكويت',                   iso:'kw',lon:47.5,   lat:29.3},
+  '634':{en:'Qatar',        ar:'قطر',                      iso:'qa',lon:51.2,   lat:25.3},
+  '368':{en:'Iraq',         ar:'العراق',                   iso:'iq',lon:43.7,   lat:33.0},
+  '887':{en:'Yemen',        ar:'اليمن',                    iso:'ye',lon:47.5,   lat:15.5},
 };
+const GULF_IDS=new Set(Object.keys(GULF));
 
-let lang = 'en';
+const T={
+  en:{sub:'NEXT-GEN LAUNDRY · TAP YOUR REGION',lblBh:'bahrain only',titBh:'Bahrain Store',subBh:'Local delivery',lblGl:'worldwide',titGl:'International Store',subGl:'Saudi Arabia + global',tipBh:'Bahrain Store',tipGl:'International Store',footer:'drglo · clean reimagined',arr:'→',insetLbl:'BAHRAIN'},
+  ar:{sub:'غسيل من الجيل القادم · اضغط على منطقتك',lblBh:'البحرين فقط',titBh:'متجر البحرين',subBh:'توصيل محلي',lblGl:'دولي',titGl:'المتجر الدولي',subGl:'السعودية + شحن عالمي',tipBh:'متجر البحرين',tipGl:'المتجر الدولي',footer:'drglo · نظافة من نوع جديد',arr:'→',insetLbl:'البحرين'},
+};
+let lang='ar';
 
-function applyLang(l) {
-  lang = l;
-  const s = T[l], isAr = l==='ar';
-  document.documentElement.lang = l;
-  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
-  document.getElementById('brand-sub').textContent  = s.sub;
-  document.getElementById('lbl-bh').textContent     = s.lblBh;
-  document.getElementById('title-bh').textContent   = s.titBh;
-  document.getElementById('sub-bh').textContent     = s.subBh;
-  document.getElementById('lbl-gl').textContent     = s.lblGl;
-  document.getElementById('title-gl').textContent   = s.titGl;
-  document.getElementById('sub-gl').textContent     = s.subGl;
-  document.getElementById('footer').textContent     = s.footer;
-  document.getElementById('arr-bh').textContent     = s.arr;
-  document.getElementById('arr-gl').textContent     = s.arr;
-  document.getElementById('card-bh').setAttribute('aria-label', s.titBh);
-  document.getElementById('card-gl').setAttribute('aria-label', s.titGl);
-  const btnEn = document.getElementById('btn-en');
-  const btnAr = document.getElementById('btn-ar');
-  btnEn.classList.toggle('active',!isAr); btnEn.setAttribute('aria-pressed',String(!isAr));
-  btnAr.classList.toggle('active', isAr); btnAr.setAttribute('aria-pressed',String(isAr));
-  const il = document.getElementById('inset-lbl-text');
-  if (il) il.textContent = s.insetLbl;
+function applyLang(l){
+  lang=l;const s=T[l],isAr=l==='ar';
+  document.documentElement.lang=l;
+  document.documentElement.dir=isAr?'rtl':'ltr';
+  document.getElementById('brand-sub').textContent=s.sub;
+  document.getElementById('lbl-bh').textContent=s.lblBh;
+  document.getElementById('title-bh').textContent=s.titBh;
+  document.getElementById('sub-bh').textContent=s.subBh;
+  document.getElementById('lbl-gl').textContent=s.lblGl;
+  document.getElementById('title-gl').textContent=s.titGl;
+  document.getElementById('sub-gl').textContent=s.subGl;
+  document.getElementById('footer').textContent=s.footer;
+  document.getElementById('arr-bh').textContent=s.arr;
+  document.getElementById('arr-gl').textContent=s.arr;
+  document.getElementById('btn-en').classList.toggle('active',!isAr);
+  document.getElementById('btn-ar').classList.toggle('active',isAr);
+  const il=document.getElementById('inset-lbl-text');
+  if(il)il.textContent=s.insetLbl;
 }
-function setLang(l){ applyLang(l); }
+function setLang(l){applyLang(l);}
 
-/* ═══ D3 MAP ═══ */
-const W = 640, H = 430;
-const GULF_IDS = new Set(Object.keys(GULF));
+/* ── D3 Map ── */
+const VW=660,VH=460;
+const svg=d3.select('#gulf-svg');
+const tip=document.getElementById('tip');
+const wrap=document.getElementById('map-wrap');
 
-const svg    = d3.select('#gulf-svg');
-const tip    = document.getElementById('tip');
-const wrap   = document.querySelector('.map-wrap');
-const loader = document.getElementById('map-loader');
+const proj=d3.geoMercator().center([50,24]).scale(1050).translate([VW/2,VH/2]);
+const gpath=d3.geoPath(proj);
+const [bhX,bhY]=proj([50.5577,26.0667]);
 
-/* Colours */
-const F_DEF    = '#cac4ba';
-const F_BH     = '#adc2e2';
-const F_HOV    = '#b4aea4';
-const F_BH_HOV = '#8daedd';
+/* Blue land colours, NO background rect */
+const F_DEF='#5b8fc9',F_BH='#1a4f8a',F_HOV='#4a7db8',F_BH_HOV='#163f72';
 
-/* Main Gulf projection */
-const proj = d3.geoMercator().center([50,24]).scale(1050).translate([W/2, H/2]);
-const path = d3.geoPath(proj);
+/* Inset box — bottom-left */
+const INS={x:8,y:VH-158,w:185,h:146};
+const projBH=d3.geoMercator().center([50.48,26.02]).scale(24000).translate([INS.x+INS.w/2,INS.y+INS.h/2+8]);
+const pathBH=d3.geoPath(projBH);
 
-/* Bahrain coords on main map */
-const [bhX, bhY] = proj([50.5577, 26.0667]);
-
-/* ── Inset box (top-right) ── */
-const INS = { x:456, y:18, w:168, h:136 };
-
-/* Bahrain-zoomed projection — centred in inset box */
-const projBH = d3.geoMercator()
-  .center([50.5577, 26.0667])
-  .scale(28000)
-  .translate([INS.x + INS.w/2, INS.y + INS.h/2]);
-const pathBH = d3.geoPath(projBH);
-
-/* ── defs ── */
-const defs = svg.append('defs');
-
-/* Ocean gradient — gives soft water feel without a hard box bg */
-const seaGrad = defs.append('radialGradient').attr('id','sea')
-  .attr('cx','50%').attr('cy','58%').attr('r','52%');
-seaGrad.append('stop').attr('offset','0%').attr('stop-color','#dbd5cc').attr('stop-opacity','.55');
-seaGrad.append('stop').attr('offset','100%').attr('stop-color','#f3f0ec').attr('stop-opacity','0');
-
-/* Drop shadow for inset card */
-const ds = defs.append('filter').attr('id','dshadow')
-  .attr('x','-12%').attr('y','-12%').attr('width','124%').attr('height','124%');
-ds.append('feDropShadow')
-  .attr('dx',0).attr('dy',2).attr('stdDeviation',6)
-  .attr('flood-color','rgba(0,0,0,.14)');
+const defs=svg.append('defs');
 
 /* Clip for inset */
 defs.append('clipPath').attr('id','ins-clip')
-  .append('rect')
-  .attr('x',INS.x).attr('y',INS.y)
-  .attr('width',INS.w).attr('height',INS.h)
-  .attr('rx',11);
+  .append('rect').attr('x',INS.x).attr('y',INS.y).attr('width',INS.w).attr('height',INS.h).attr('rx',11);
 
-/* ── Transparent background (page shows through — map floats) ── */
-svg.append('rect').attr('width',W).attr('height',H).attr('fill','#f3f0ec');
+/* Inset shadow filter */
+const ds=defs.append('filter').attr('id','dshadow').attr('x','-18%').attr('y','-18%').attr('width','136%').attr('height','136%');
+ds.append('feDropShadow').attr('dx',0).attr('dy',3).attr('stdDeviation',7).attr('flood-color','rgba(0,0,0,.13)');
 
-/* Soft sea-water glow behind gulf */
-svg.append('ellipse')
-  .attr('cx',W/2).attr('cy',H*.58).attr('rx',W*.5).attr('ry',H*.4)
-  .attr('fill','url(#sea)');
+/* NO background rect — map floats on page bg transparently */
 
-/* ═══ FETCH + RENDER ═══ */
 d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(function(world){
-  loader.classList.add('hidden');
-  setTimeout(function(){ loader.style.display='none'; }, 400);
+  const all=topojson.feature(world,world.objects.countries).features;
+  const gulfFeats=all.filter(d=>GULF_IDS.has(String(d.id)));
+  const bhFeat=all.find(d=>String(d.id)==='48');
+  const saFeats=all.filter(d=>String(d.id)==='682');
 
-  const all       = topojson.feature(world, world.objects.countries).features;
-  const gulfFeats = all.filter(function(d){ return GULF_IDS.has(String(d.id)); });
-  const bhFeat    = all.find(function(d){ return String(d.id)==='48'; });
-  const saFeats   = all.filter(function(d){ return String(d.id)==='682'; });
-
-  /* ── Main fills ── */
-  svg.selectAll('path.gc')
-    .data(gulfFeats).join('path').attr('class','gc')
-    .attr('d', path)
-    .attr('fill', function(d){ return String(d.id)==='48' ? F_BH : F_DEF; })
-    .attr('stroke','#f3f0ec').attr('stroke-width',1.2)
-    .attr('stroke-linejoin','round')
+  /* Country shapes */
+  svg.selectAll('path.gc').data(gulfFeats).join('path').attr('class','gc')
+    .attr('d',gpath)
+    .attr('fill',d=>String(d.id)==='48'?F_BH:F_DEF)
+    .attr('stroke','rgba(243,240,236,.7)').attr('stroke-width',1.2).attr('stroke-linejoin','round')
     .style('cursor','pointer').style('opacity',0)
-    .transition().duration(680).delay(function(_,i){ return i*55; })
-    .style('opacity',1);
+    .transition().duration(680).delay((_,i)=>i*55).style('opacity',1);
 
   svg.selectAll('path.gc')
-    .on('mousemove', function(event,d){
-      const id=String(d.id), isBH=id==='48';
-      d3.select(this).attr('fill', isBH ? F_BH_HOV : F_HOV);
-      const info=GULF[id]; if(info) showTip(event,info,isBH);
+    .on('mousemove',function(event,d){
+      const id=String(d.id),isBH=id==='48';
+      d3.select(this).attr('fill',isBH?F_BH_HOV:F_HOV);
+      const info=GULF[id];if(info)showTip(event,info,isBH);
     })
-    .on('mouseleave', function(_,d){
-      d3.select(this).attr('fill', String(d.id)==='48' ? F_BH : F_DEF);
+    .on('mouseleave',function(_,d){
+      d3.select(this).attr('fill',String(d.id)==='48'?F_BH:F_DEF);
       hideTip();
     })
-    .on('click', function(_,d){
-      window.open(String(d.id)==='48' ? BH_LINK : GL_LINK,'_blank','noopener,noreferrer');
+    .on('click',function(_,d){
+      window.open(String(d.id)==='48'?BH_LINK:GL_LINK,'_blank','noopener,noreferrer');
     });
 
-  /* ══════════════════════════════════════
-     BAHRAIN INSET — magnified panel + line
-  ══════════════════════════════════════ */
-  if (bhFeat) {
-    /* Dashed leader line from inset bottom-left to BH on main map */
-    svg.append('line')
-      .attr('x1', INS.x + 18).attr('y1', INS.y + INS.h)
-      .attr('x2', bhX).attr('y2', bhY)
-      .attr('stroke','rgba(36,81,160,.3)')
-      .attr('stroke-width',1).attr('stroke-dasharray','4 3')
-      .attr('pointer-events','none');
+  /* ── Bahrain inset ── */
+  if(bhFeat){
+    /* Curved dashed connector: inset top-right → BH dot */
+    const lx0=INS.x+INS.w-10,ly0=INS.y;
+    const cpx=(lx0+bhX)/2+30,cpy=(ly0+bhY)/2-40;
+    svg.append('path')
+      .attr('d',`M${lx0},${ly0} C${cpx},${cpy} ${bhX+10},${bhY-20} ${bhX},${bhY}`)
+      .attr('fill','none').attr('stroke','rgba(26,79,138,.38)').attr('stroke-width',1.3)
+      .attr('stroke-dasharray','5 3').attr('pointer-events','none');
 
-    /* Ripple dot at Bahrain's actual position */
-    const rg = svg.append('g').attr('pointer-events','none');
-    const r1 = rg.append('circle').attr('cx',bhX).attr('cy',bhY).attr('r',3)
-      .attr('fill','none').attr('stroke','#2451a0').attr('stroke-width',1.3).attr('opacity',0);
-    const r2 = rg.append('circle').attr('cx',bhX).attr('cy',bhY).attr('r',3)
-      .attr('fill','none').attr('stroke','#2451a0').attr('stroke-width',.8).attr('opacity',0);
-    svg.append('circle').attr('cx',bhX).attr('cy',bhY).attr('r',3.5)
-      .attr('fill','#2451a0').attr('opacity',.85).attr('pointer-events','none');
+    /* Ripple at real BH position */
+    const rg=svg.append('g').attr('pointer-events','none');
+    const r1=rg.append('circle').attr('cx',bhX).attr('cy',bhY).attr('r',3).attr('fill','none').attr('stroke','#1a4f8a').attr('stroke-width',1.3).attr('opacity',0);
+    const r2=rg.append('circle').attr('cx',bhX).attr('cy',bhY).attr('r',3).attr('fill','none').attr('stroke','#1a4f8a').attr('stroke-width',.8).attr('opacity',0);
+    svg.append('circle').attr('cx',bhX).attr('cy',bhY).attr('r',3.5).attr('fill','#1a4f8a').attr('opacity',.9).attr('pointer-events','none');
     function ripple(){
-      r1.attr('r',3).attr('opacity',.65).transition().duration(1600)
-        .attr('r',18).attr('opacity',0).on('end',ripple);
-      r2.attr('r',3).attr('opacity',.35).transition().delay(360).duration(1600)
-        .attr('r',12).attr('opacity',0);
+      r1.attr('r',3).attr('opacity',.65).transition().duration(1600).attr('r',18).attr('opacity',0).on('end',ripple);
+      r2.attr('r',3).attr('opacity',.35).transition().delay(360).duration(1600).attr('r',12).attr('opacity',0);
     }
-    setTimeout(ripple, 700);
+    setTimeout(ripple,700);
 
-    /* ── Inset panel ── */
-    const ig = svg.append('g').style('cursor','pointer')
-      .on('click', function(){ window.open(BH_LINK,'_blank','noopener,noreferrer'); })
-      .on('mousemove', function(e){ showTip(e, GULF['48'], true); })
-      .on('mouseleave', hideTip);
+    /* Inset group */
+    const ig=svg.append('g').style('cursor','pointer')
+      .on('click',()=>window.open(BH_LINK,'_blank','noopener,noreferrer'))
+      .on('mousemove',e=>showTip(e,GULF['48'],true))
+      .on('mouseleave',hideTip);
 
-    /* Card shadow bg — outside clip so shadow shows */
-    ig.append('rect')
-      .attr('x',INS.x-1).attr('y',INS.y-1)
-      .attr('width',INS.w+2).attr('height',INS.h+2)
-      .attr('rx',12).attr('fill','#f3f0ec')
-      .attr('filter','url(#dshadow)');
+    /* Shadow base */
+    ig.append('rect').attr('x',INS.x-1).attr('y',INS.y-1).attr('width',INS.w+2).attr('height',INS.h+2)
+      .attr('rx',12).attr('fill','#f3f0ec').attr('filter','url(#dshadow)');
 
-    /* Clipped contents */
-    const cl = ig.append('g').attr('clip-path','url(#ins-clip)');
+    /* Clipped zoom */
+    const cl=ig.append('g').attr('clip-path','url(#ins-clip)');
+    /* water bg inside inset only */
+    cl.append('rect').attr('x',INS.x).attr('y',INS.y).attr('width',INS.w).attr('height',INS.h).attr('fill','#c5ddf5');
+    /* Saudi context */
+    cl.selectAll('path.ins-sa').data(saFeats).join('path').attr('class','ins-sa')
+      .attr('d',pathBH).attr('fill','#8ab4e0').attr('stroke','rgba(243,240,236,.6)').attr('stroke-width',.7);
+    /* BH island */
+    cl.append('path').datum(bhFeat).attr('d',pathBH).attr('fill',F_BH)
+      .attr('stroke','rgba(26,79,138,.55)').attr('stroke-width',.9);
+    /* hover tint */
+    const bhHov=cl.append('path').datum(bhFeat).attr('d',pathBH).attr('fill','transparent');
+    ig.on('mouseover',()=>bhHov.attr('fill','rgba(26,79,138,.18)')).on('mouseout',()=>bhHov.attr('fill','transparent'));
 
-    /* Water bg inside inset */
-    cl.append('rect')
-      .attr('x',INS.x).attr('y',INS.y)
-      .attr('width',INS.w).attr('height',INS.h)
-      .attr('fill','#d8e8f6');
+    /* Flag sprite */
+    const FW=32,FH=21;
+    const fo=ig.append('foreignObject').attr('x',INS.x+INS.w/2-FW/2).attr('y',INS.y+5).attr('width',FW).attr('height',FH);
+    fo.append('xhtml:span').attr('class','fi fi-bh')
+      .style('width',FW+'px').style('height',FH+'px')
+      .style('display','block').style('background-size','cover').style('border-radius','2px');
 
-    /* Saudi context land in inset */
-    cl.selectAll('path.ins-sa')
-      .data(saFeats).join('path').attr('class','ins-sa')
-      .attr('d', pathBH)
-      .attr('fill','#c5bfb5').attr('stroke','#f3f0ec').attr('stroke-width',.7);
-
-    /* Bahrain land in inset — highlighted */
-    cl.append('path').datum(bhFeat)
-      .attr('d', pathBH)
-      .attr('fill', F_BH)
-      .attr('stroke','rgba(36,81,160,.5)').attr('stroke-width',.9);
-
-    /* Hover tint for inset BH */
-    const bhHover = cl.append('path').datum(bhFeat)
-      .attr('d', pathBH).attr('fill','transparent');
-    ig.on('mouseover', function(){ bhHover.attr('fill','rgba(141,174,221,.3)'); })
-      .on('mouseout',  function(){ bhHover.attr('fill','transparent'); });
-
-    /* ── Flag pin inside inset ── */
-    const FW=30, FH=20;
-    /* Place flag pin roughly in centre of inset */
-    const fpx = INS.x + INS.w/2 + 12;
-    const fpy = INS.y + INS.h/2 + 4;
-    const stemH = 28;
-
-    /* shadow behind flag */
-    ig.append('rect')
-      .attr('x', fpx - FW/2 - 2).attr('y', fpy - stemH - FH - 2)
-      .attr('width', FW+4).attr('height', FH+4)
-      .attr('rx',4).attr('fill','rgba(36,81,160,.18)');
-
-    /* foreignObject: flag-icons sprite */
-    const fo = ig.append('foreignObject')
-      .attr('x', fpx - FW/2).attr('y', fpy - stemH - FH)
-      .attr('width', FW).attr('height', FH);
-    fo.append('xhtml:span')
-      .attr('class','fi fi-bh fis')
-      .style('width', FW+'px').style('height', FH+'px')
-      .style('display','block').style('border-radius','3px')
-      .style('pointer-events','none');
-
-    /* Stem */
-    ig.append('line')
-      .attr('x1',fpx).attr('y1', fpy - stemH - FH + FH + 2)
-      .attr('x2',fpx).attr('y2', fpy - 3)
-      .attr('stroke','#2451a0').attr('stroke-width',1.4)
-      .attr('stroke-linecap','round').attr('opacity',.55);
-    ig.append('circle').attr('cx',fpx).attr('cy', fpy - 3)
-      .attr('r',2.8).attr('fill','#2451a0').attr('opacity',.75);
-
-    /* ── "BAHRAIN" label badge at top of inset ── */
-    ig.append('rect')
-      .attr('x', INS.x + 8).attr('y', INS.y + 7)
-      .attr('width', 66).attr('height', 17)
-      .attr('rx',5).attr('fill','rgba(36,81,160,.13)');
-    ig.append('text')
-      .attr('id','inset-lbl-text')
-      .attr('x', INS.x + 41).attr('y', INS.y + 18.5)
-      .attr('text-anchor','middle')
-      .attr('font-family','Tajawal,sans-serif')
-      .attr('font-size',9).attr('letter-spacing','.09em')
-      .attr('fill','#2451a0').attr('font-weight','500')
-      .text('BAHRAIN');
+    /* Label */
+    ig.append('rect').attr('x',INS.x+INS.w/2-32).attr('y',INS.y+INS.h-20).attr('width',64).attr('height',15)
+      .attr('rx',4).attr('fill','rgba(26,79,138,.14)');
+    ig.append('text').attr('id','inset-lbl-text')
+      .attr('x',INS.x+INS.w/2).attr('y',INS.y+INS.h-9)
+      .attr('text-anchor','middle').attr('font-family','Tajawal,sans-serif')
+      .attr('font-size',9).attr('letter-spacing','.1em').attr('fill','#1a4f8a').attr('font-weight','500')
+      .text('البحرين');
 
     /* Border ring */
-    ig.append('rect')
-      .attr('x',INS.x).attr('y',INS.y)
-      .attr('width',INS.w).attr('height',INS.h)
-      .attr('rx',11).attr('fill','none')
-      .attr('stroke','rgba(36,81,160,.2)').attr('stroke-width',1);
+    ig.append('rect').attr('x',INS.x).attr('y',INS.y).attr('width',INS.w).attr('height',INS.h)
+      .attr('rx',11).attr('fill','none').attr('stroke','rgba(26,79,138,.22)').attr('stroke-width',1);
   }
 
-  /* ── Country flag pins (non-Bahrain) ── */
-  Object.entries(GULF).forEach(function([id, info]){
-    if (id==='48') return;
-    const [px, py] = proj([info.lon, info.lat]);
-    if (px<8||px>W-8||py<8||py>H-8) return;
-
-    const fw=26, fh=Math.round(26*.667), pinH=34;
-
-    const g = svg.append('g')
-      .attr('transform','translate('+px+','+py+')')
-      .style('cursor','pointer')
-      .attr('tabindex',0).attr('role','button')
-      .attr('aria-label', info.en);
-
-    g.on('click',   function(){ window.open(GL_LINK,'_blank','noopener,noreferrer'); })
-     .on('keydown', function(e){
-       if(e.key==='Enter'||e.key===' '){ e.preventDefault(); window.open(GL_LINK,'_blank','noopener,noreferrer'); }
-     })
-     .on('mousemove', function(e){ showTip(e,info,false); })
-     .on('mouseleave', hideTip);
-
-    /* Stem */
-    g.append('line')
-      .attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',-pinH)
-      .attr('stroke','#7a7268').attr('stroke-width',1.3)
-      .attr('stroke-linecap','round').attr('opacity',.5);
-
-    /* Dot */
-    g.append('circle').attr('r',2.5).attr('fill','#7a7268').attr('opacity',.6);
-
-    /* Flag bg shadow */
-    g.append('rect')
-      .attr('x',-fw/2-2).attr('y',-pinH-fh-2)
-      .attr('width',fw+4).attr('height',fh+4)
-      .attr('rx',4).attr('fill','rgba(0,0,0,.08)');
-
-    /* foreignObject flag */
-    const fo = g.append('foreignObject')
-      .attr('x',-fw/2).attr('y',-pinH-fh)
-      .attr('width',fw).attr('height',fh);
-    fo.append('xhtml:span')
-      .attr('class','fi fi-'+info.iso+' fis')
+  /* ── Flag pins for non-BH countries ── */
+  Object.entries(GULF).forEach(([id,info])=>{
+    if(id==='48') return;
+    const [px,py]=proj([info.lon,info.lat]);
+    if(px<8||px>VW-8||py<8||py>VH-8) return;
+    const fw=28,fh=19,pinH=32;
+    const g=svg.append('g').attr('transform',`translate(${px},${py})`)
+      .style('cursor','pointer').attr('tabindex',0).attr('role','button').attr('aria-label',info.en);
+    g.on('click',()=>window.open(GL_LINK,'_blank','noopener,noreferrer'))
+     .on('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.open(GL_LINK,'_blank','noopener,noreferrer');}})
+     .on('mousemove',e=>showTip(e,info,false))
+     .on('mouseleave',hideTip);
+    g.append('line').attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',-pinH)
+      .attr('stroke','#1a4f8a').attr('stroke-width',1.2).attr('stroke-linecap','round').attr('opacity',.45);
+    g.append('circle').attr('r',2.5).attr('fill','#1a4f8a').attr('opacity',.55);
+    g.append('rect').attr('x',-fw/2-2).attr('y',-pinH-fh-2).attr('width',fw+4).attr('height',fh+4)
+      .attr('rx',4).attr('fill','rgba(0,0,0,.09)');
+    const fo=g.append('foreignObject').attr('x',-fw/2).attr('y',-pinH-fh).attr('width',fw).attr('height',fh);
+    fo.append('xhtml:span').attr('class','fi fi-'+info.iso)
       .style('width',fw+'px').style('height',fh+'px')
-      .style('display','block').style('border-radius','3px')
-      .style('pointer-events','none');
+      .style('display','block').style('background-size','cover').style('border-radius','3px');
   });
 
-  applyLang('en');
+  applyLang('ar');
+}).catch(err=>{console.error('[drglo]',err);applyLang('ar');});
 
-}).catch(function(err){
-  console.error('[drglo] map load error:', err);
-  loader.style.display = 'none';
-  applyLang('en');
-});
-
-/* ── Tooltip ── */
-function showTip(event, info, isBH){
-  const rect = wrap.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-  const s = T[lang];
-  tip.textContent = (lang==='ar' ? info.ar : info.en) + ' · ' + (isBH ? s.tipBh : s.tipGl);
-  tip.style.direction = lang==='ar' ? 'rtl' : 'ltr';
-  tip.style.opacity = '1';
-  const tw = tip.offsetWidth||170, th = tip.offsetHeight||28;
-  tip.style.left = Math.min(Math.max(x+14,6), wrap.offsetWidth - tw - 6) + 'px';
-  tip.style.top  = Math.min(Math.max(y-th-8,6), wrap.offsetHeight - th - 6) + 'px';
+/* Tooltip */
+function showTip(event,info,isBH){
+  const rect=wrap.getBoundingClientRect();
+  const x=event.clientX-rect.left,y=event.clientY-rect.top;
+  const s=T[lang];
+  tip.textContent=(lang==='ar'?info.ar:info.en)+' · '+(isBH?s.tipBh:s.tipGl);
+  tip.style.direction=lang==='ar'?'rtl':'ltr';
+  tip.style.opacity='1';
+  const tw=tip.offsetWidth||170,th=tip.offsetHeight||28;
+  tip.style.left=Math.min(Math.max(x+14,6),wrap.offsetWidth-tw-6)+'px';
+  tip.style.top=Math.min(Math.max(y-th-8,6),wrap.offsetHeight-th-6)+'px';
 }
-function hideTip(){ tip.style.opacity='0'; }
-document.addEventListener('scroll', hideTip, { passive:true });
+function hideTip(){tip.style.opacity='0';}
+document.addEventListener('scroll',hideTip,{passive:true});
 </script>
-
 </body>
 </html>
