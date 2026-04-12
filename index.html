@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -18,33 +17,22 @@ html,body{background:var(--bg);min-height:100%;-webkit-font-smoothing:antialiase
 body{font-family:'Tajawal',sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:0 clamp(.5rem,3vw,1.5rem) 4rem;position:relative;overflow-x:hidden}
 #bubble-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
 .hero,.lang-toggle,.map-wrap,.cards,.footer{position:relative;z-index:1}
-
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* Hero */
 .hero{width:100%;max-width:600px;display:flex;flex-direction:column;align-items:center;padding-top:clamp(1.6rem,5vw,2.8rem);margin-bottom:clamp(.6rem,2vw,1.2rem);animation:fadeUp .6s ease both}
 .brand-en{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,6vw,38px);font-weight:500;letter-spacing:.15em;color:var(--accent);text-transform:lowercase;line-height:1}
 .brand-sub{font-size:clamp(8px,2vw,11px);color:var(--accent);margin-top:6px;letter-spacing:.1em;text-transform:uppercase;opacity:.7;text-align:center;padding:0 1rem}
-
-/* Lang toggle */
 .lang-toggle{display:flex;gap:6px;margin-bottom:clamp(.6rem,2vw,1rem);animation:fadeUp .6s .08s ease both}
 .ltbtn{background:none;border:1px solid var(--border);border-radius:20px;padding:5px 18px;font-size:clamp(11px,2.5vw,13px);font-family:'Tajawal',sans-serif;color:var(--muted);cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .ltbtn.active{background:var(--accent-lt);border-color:rgba(36,81,160,.3);color:var(--accent);font-weight:500}
-
-/* Map */
 .map-wrap{width:100%;max-width:700px;position:relative;animation:fadeUp .6s .14s ease both}
 #gulf-svg{display:block;width:100%;height:auto}
-
-/* Tooltip */
 .tip{position:absolute;pointer-events:none;background:rgba(255,255,255,.96);border:1px solid rgba(0,0,0,.08);border-radius:8px;padding:5px 11px;font-size:clamp(11px,2.5vw,13px);font-family:'Tajawal',sans-serif;color:var(--ink);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:30;box-shadow:0 4px 16px rgba(0,0,0,.1)}
-
-/* Cards */
 .cards{width:100%;max-width:600px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:clamp(8px,2vw,12px);margin-top:clamp(10px,3vw,16px);animation:fadeUp .6s .24s ease both}
 .card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:clamp(.75rem,2.5vw,1rem) clamp(.85rem,2.5vw,1.1rem);text-decoration:none;display:flex;align-items:center;gap:clamp(8px,2vw,11px);transition:border-color .2s,transform .18s,box-shadow .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .card:hover{border-color:rgba(36,81,160,.22);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.07)}
 .card:active{transform:scale(.975)}
-.flag-wrap{width:36px;height:24px;border-radius:4px;overflow:hidden;flex-shrink:0;border:1px solid rgba(0,0,0,.08);line-height:0}
-.flag-wrap .fi{width:36px!important;height:24px!important;background-size:cover!important;display:block!important}
+/* Card flags — also PNG based for consistency */
+.flag-img{width:36px;height:24px;border-radius:4px;object-fit:cover;flex-shrink:0;border:1px solid rgba(0,0,0,.08);display:block}
 .ctxt{flex:1;min-width:0}
 .clabel{font-size:clamp(9px,2vw,10px);letter-spacing:.08em;text-transform:uppercase;color:var(--light);margin-bottom:2px}
 .ctitle{font-size:clamp(13px,3vw,14px);font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -53,8 +41,6 @@ body{font-family:'Tajawal',sans-serif;display:flex;flex-direction:column;align-i
 [dir="ltr"] .card:hover .carr{transform:translateX(3px)}
 [dir="rtl"] .carr{display:inline-block;transform:scaleX(-1)}
 [dir="rtl"] .card:hover .carr{transform:scaleX(-1) translateX(-3px)}
-
-/* Footer */
 .footer{margin-top:clamp(1.2rem,4vw,2rem);font-size:clamp(10px,2vw,11px);color:var(--accent);letter-spacing:.06em;text-align:center;opacity:.6;animation:fadeUp .6s .34s ease both}
 </style>
 </head>
@@ -73,13 +59,13 @@ body{font-family:'Tajawal',sans-serif;display:flex;flex-direction:column;align-i
 </div>
 
 <div class="map-wrap" id="map-wrap">
-  <svg id="gulf-svg" viewBox="0 0 660 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+  <svg id="gulf-svg" viewBox="0 -60 660 520" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
   <div class="tip" id="tip"></div>
 </div>
 
 <div class="cards">
   <a href="https://aliabdulaalit-dr-glo-project.odoo.com" class="card" target="_blank" rel="noopener" id="card-bh">
-    <div class="flag-wrap"><span class="fi fi-bh" style="width:36px;height:24px;background-size:cover;display:block"></span></div>
+    <img class="flag-img" src="https://flagcdn.com/w40/bh.png" alt="Bahrain"/>
     <div class="ctxt">
       <div class="clabel" id="lbl-bh">البحرين فقط</div>
       <div class="ctitle" id="title-bh">متجر البحرين</div>
@@ -88,7 +74,7 @@ body{font-family:'Tajawal',sans-serif;display:flex;flex-direction:column;align-i
     <div class="carr" id="arr-bh">→</div>
   </a>
   <a href="https://drgloshop.com" class="card" target="_blank" rel="noopener" id="card-gl">
-    <div class="flag-wrap"><span class="fi fi-sa" style="width:36px;height:24px;background-size:cover;display:block"></span></div>
+    <img class="flag-img" src="https://flagcdn.com/w40/sa.png" alt="Saudi Arabia"/>
     <div class="ctxt">
       <div class="clabel" id="lbl-gl">دولي</div>
       <div class="ctitle" id="title-gl">المتجر الدولي</div>
@@ -137,6 +123,9 @@ body{font-family:'Tajawal',sans-serif;display:flex;flex-direction:column;align-i
 const BH_LINK='https://aliabdulaalit-dr-glo-project.odoo.com';
 const GL_LINK='https://drgloshop.com';
 
+/* flagcdn.com PNG URLs — native <image> in SVG, works on all browsers incl iOS */
+const FLAG_URL = iso => `https://flagcdn.com/w40/${iso}.png`;
+
 const GULF={
   '48': {en:'Bahrain',      ar:'البحرين',                  iso:'bh',lon:50.5577,lat:26.0667},
   '682':{en:'Saudi Arabia', ar:'المملكة العربية السعودية', iso:'sa',lon:45.0,   lat:24.0},
@@ -182,29 +171,26 @@ const svg=d3.select('#gulf-svg');
 const tip=document.getElementById('tip');
 const wrap=document.getElementById('map-wrap');
 
-const proj=d3.geoMercator().center([50,24]).scale(1050).translate([VW/2,VH/2]);
+const proj=d3.geoMercator().center([50,24]).scale(1050).translate([VW/2,VH/2+30]);
 const gpath=d3.geoPath(proj);
 const [bhX,bhY]=proj([50.5577,26.0667]);
 
-/* Blue land colours, NO background rect */
 const F_DEF='#5b8fc9',F_BH='#1a4f8a',F_HOV='#4a7db8',F_BH_HOV='#163f72';
 
-/* Inset box — bottom-left */
-const INS={x:8,y:VH-158,w:185,h:146};
+const INS={x:8,y:VH-158+30,w:185,h:146};
 const projBH=d3.geoMercator().center([50.48,26.02]).scale(24000).translate([INS.x+INS.w/2,INS.y+INS.h/2+8]);
 const pathBH=d3.geoPath(projBH);
 
 const defs=svg.append('defs');
-
-/* Clip for inset */
 defs.append('clipPath').attr('id','ins-clip')
   .append('rect').attr('x',INS.x).attr('y',INS.y).attr('width',INS.w).attr('height',INS.h).attr('rx',11);
 
-/* Inset shadow filter */
+/* Clip for rounded flag corners on pins */
+defs.append('clipPath').attr('id','flag-clip-bh')
+  .append('rect').attr('x',0).attr('y',0).attr('width',32).attr('height',21).attr('rx',3);
+
 const ds=defs.append('filter').attr('id','dshadow').attr('x','-18%').attr('y','-18%').attr('width','136%').attr('height','136%');
 ds.append('feDropShadow').attr('dx',0).attr('dy',3).attr('stdDeviation',7).attr('flood-color','rgba(0,0,0,.13)');
-
-/* NO background rect — map floats on page bg transparently */
 
 d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(function(world){
   const all=topojson.feature(world,world.objects.countries).features;
@@ -212,7 +198,6 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(f
   const bhFeat=all.find(d=>String(d.id)==='48');
   const saFeats=all.filter(d=>String(d.id)==='682');
 
-  /* Country shapes */
   svg.selectAll('path.gc').data(gulfFeats).join('path').attr('class','gc')
     .attr('d',gpath)
     .attr('fill',d=>String(d.id)==='48'?F_BH:F_DEF)
@@ -236,7 +221,6 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(f
 
   /* ── Bahrain inset ── */
   if(bhFeat){
-    /* Curved dashed connector: inset top-right → BH dot */
     const lx0=INS.x+INS.w-10,ly0=INS.y;
     const cpx=(lx0+bhX)/2+30,cpy=(ly0+bhY)/2-40;
     svg.append('path')
@@ -244,7 +228,6 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(f
       .attr('fill','none').attr('stroke','rgba(26,79,138,.38)').attr('stroke-width',1.3)
       .attr('stroke-dasharray','5 3').attr('pointer-events','none');
 
-    /* Ripple at real BH position */
     const rg=svg.append('g').attr('pointer-events','none');
     const r1=rg.append('circle').attr('cx',bhX).attr('cy',bhY).attr('r',3).attr('fill','none').attr('stroke','#1a4f8a').attr('stroke-width',1.3).attr('opacity',0);
     const r2=rg.append('circle').attr('cx',bhX).attr('cy',bhY).attr('r',3).attr('fill','none').attr('stroke','#1a4f8a').attr('stroke-width',.8).attr('opacity',0);
@@ -255,38 +238,35 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(f
     }
     setTimeout(ripple,700);
 
-    /* Inset group */
     const ig=svg.append('g').style('cursor','pointer')
       .on('click',()=>window.open(BH_LINK,'_blank','noopener,noreferrer'))
       .on('mousemove',e=>showTip(e,GULF['48'],true))
       .on('mouseleave',hideTip);
 
-    /* Shadow base */
     ig.append('rect').attr('x',INS.x-1).attr('y',INS.y-1).attr('width',INS.w+2).attr('height',INS.h+2)
       .attr('rx',12).attr('fill','#f3f0ec').attr('filter','url(#dshadow)');
 
-    /* Clipped zoom */
     const cl=ig.append('g').attr('clip-path','url(#ins-clip)');
-    /* water bg inside inset only */
     cl.append('rect').attr('x',INS.x).attr('y',INS.y).attr('width',INS.w).attr('height',INS.h).attr('fill','#c5ddf5');
-    /* Saudi context */
     cl.selectAll('path.ins-sa').data(saFeats).join('path').attr('class','ins-sa')
       .attr('d',pathBH).attr('fill','#8ab4e0').attr('stroke','rgba(243,240,236,.6)').attr('stroke-width',.7);
-    /* BH island */
     cl.append('path').datum(bhFeat).attr('d',pathBH).attr('fill',F_BH)
       .attr('stroke','rgba(26,79,138,.55)').attr('stroke-width',.9);
-    /* hover tint */
     const bhHov=cl.append('path').datum(bhFeat).attr('d',pathBH).attr('fill','transparent');
     ig.on('mouseover',()=>bhHov.attr('fill','rgba(26,79,138,.18)')).on('mouseout',()=>bhHov.attr('fill','transparent'));
 
-    /* Flag sprite */
+    /* BH flag in inset — native SVG <image> tag, works on iOS */
     const FW=32,FH=21;
-    const fo=ig.append('foreignObject').attr('x',INS.x+INS.w/2-FW/2).attr('y',INS.y+5).attr('width',FW).attr('height',FH);
-    fo.append('xhtml:span').attr('class','fi fi-bh')
-      .style('width',FW+'px').style('height',FH+'px')
-      .style('display','block').style('background-size','cover').style('border-radius','2px');
+    ig.append('rect')
+      .attr('x',INS.x+INS.w/2-FW/2-1).attr('y',INS.y+4).attr('width',FW+2).attr('height',FH+2)
+      .attr('rx',4).attr('fill','rgba(0,0,0,.12)');
+    ig.append('image')
+      .attr('href', FLAG_URL('bh'))
+      .attr('x',INS.x+INS.w/2-FW/2).attr('y',INS.y+5)
+      .attr('width',FW).attr('height',FH)
+      .attr('preserveAspectRatio','xMidYMid slice')
+      .style('border-radius','3px');
 
-    /* Label */
     ig.append('rect').attr('x',INS.x+INS.w/2-32).attr('y',INS.y+INS.h-20).attr('width',64).attr('height',15)
       .attr('rx',4).attr('fill','rgba(26,79,138,.14)');
     ig.append('text').attr('id','inset-lbl-text')
@@ -295,38 +275,51 @@ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(f
       .attr('font-size',9).attr('letter-spacing','.1em').attr('fill','#1a4f8a').attr('font-weight','500')
       .text('البحرين');
 
-    /* Border ring */
     ig.append('rect').attr('x',INS.x).attr('y',INS.y).attr('width',INS.w).attr('height',INS.h)
       .attr('rx',11).attr('fill','none').attr('stroke','rgba(26,79,138,.22)').attr('stroke-width',1);
   }
 
-  /* ── Flag pins for non-BH countries ── */
+  /* ── Flag pins — SVG <image> instead of foreignObject ── */
   Object.entries(GULF).forEach(([id,info])=>{
     if(id==='48') return;
     const [px,py]=proj([info.lon,info.lat]);
-    if(px<8||px>VW-8||py<8||py>VH-8) return;
-    const fw=28,fh=19,pinH=32;
-    const g=svg.append('g').attr('transform',`translate(${px},${py})`)
-      .style('cursor','pointer').attr('tabindex',0).attr('role','button').attr('aria-label',info.en);
+    if(px<8||px>VW-8||py<-50||py>VH+80) return;
+    const fw=30,fh=20,pinH=34;
+
+    /* unique clip per pin for rounded corners */
+    const clipId=`fc-${id}`;
+    defs.append('clipPath').attr('id',clipId)
+      .append('rect').attr('x',px-fw/2).attr('y',py-pinH-fh).attr('width',fw).attr('height',fh).attr('rx',3);
+
+    const g=svg.append('g').style('cursor','pointer')
+      .attr('tabindex',0).attr('role','button').attr('aria-label',info.en);
     g.on('click',()=>window.open(GL_LINK,'_blank','noopener,noreferrer'))
      .on('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.open(GL_LINK,'_blank','noopener,noreferrer');}})
      .on('mousemove',e=>showTip(e,info,false))
      .on('mouseleave',hideTip);
-    g.append('line').attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',-pinH)
+
+    /* stem */
+    g.append('line')
+      .attr('x1',px).attr('y1',py).attr('x2',px).attr('y2',py-pinH)
       .attr('stroke','#1a4f8a').attr('stroke-width',1.2).attr('stroke-linecap','round').attr('opacity',.45);
-    g.append('circle').attr('r',2.5).attr('fill','#1a4f8a').attr('opacity',.55);
-    g.append('rect').attr('x',-fw/2-2).attr('y',-pinH-fh-2).attr('width',fw+4).attr('height',fh+4)
-      .attr('rx',4).attr('fill','rgba(0,0,0,.09)');
-    const fo=g.append('foreignObject').attr('x',-fw/2).attr('y',-pinH-fh).attr('width',fw).attr('height',fh);
-    fo.append('xhtml:span').attr('class','fi fi-'+info.iso)
-      .style('width',fw+'px').style('height',fh+'px')
-      .style('display','block').style('background-size','cover').style('border-radius','3px');
+    /* base dot */
+    g.append('circle').attr('cx',px).attr('cy',py).attr('r',2.5).attr('fill','#1a4f8a').attr('opacity',.55);
+    /* flag shadow */
+    g.append('rect')
+      .attr('x',px-fw/2-1).attr('y',py-pinH-fh-1).attr('width',fw+2).attr('height',fh+2)
+      .attr('rx',4).attr('fill','rgba(0,0,0,.12)');
+    /* flag image — native SVG <image>, renders correctly on iOS Safari */
+    g.append('image')
+      .attr('href', FLAG_URL(info.iso))
+      .attr('x',px-fw/2).attr('y',py-pinH-fh)
+      .attr('width',fw).attr('height',fh)
+      .attr('preserveAspectRatio','xMidYMid slice')
+      .attr('clip-path',`url(#${clipId})`);
   });
 
   applyLang('ar');
 }).catch(err=>{console.error('[drglo]',err);applyLang('ar');});
 
-/* Tooltip */
 function showTip(event,info,isBH){
   const rect=wrap.getBoundingClientRect();
   const x=event.clientX-rect.left,y=event.clientY-rect.top;
